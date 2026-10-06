@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezgin - Profil Ayarları</title>
+    <link rel="icon" type="image/jpeg" href="gezgin icon.jpg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;}
+        body { background-color: #bac2ca; display: flex; justify-content: center; padding: 40px 20px; transition: 0.3s; color: #1e293b; min-height: 100vh;}
+        
+        .container { width: 100%; max-width: 550px; }
+
+        .profile-header { background-color: #ffffff; border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; transition: 0.3s; }
+        .btn-back { color: #f8fafc; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .profile-header h2 { font-size: 18px; color: #1e293b; flex: 1; text-align: center; margin-right: 70px; } 
+        .btn-back-text { color: #3b82f6; font-weight: 600; text-decoration: none; }
+
+        .profile-card { background-color: #ffffff; border-radius: 16px; padding: 40px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; transition: 0.3s; }
+        
+        .avatar-section { text-align: center; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #e2e8f0; transition: 0.3s; }
+        .avatar-wrapper { position: relative; display: inline-block; margin-bottom: 15px; }
+        .avatar-display { width: 100px; height: 100px; background-color: #e2e8f0; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .avatar-display img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .edit-badge { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; background-color: #1e293b; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 14px; border: 3px solid #ffffff; cursor: pointer; transition: 0.2s; }
+        .edit-badge:hover { background-color: #3b82f6; transform: scale(1.1); }
+        
+        .user-name { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
+        .user-subtitle { font-size: 13px; color: #64748b; }
+
+        .form-section { text-align: left; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 8px; transition: 0.3s; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-group input { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 14px; background-color: #f8fafc; transition: 0.2s; color: #1e293b; padding-right: 45px; }
+        .input-group input:focus { border-color: #3b82f6; background-color: #ffffff;}
+        
+        .eye-icon { position: absolute; right: 15px; cursor: pointer; color: #64748b; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .eye-icon:hover { color: #3b82f6; }
+
+        .btn-save { width: 100%; background-color: #10b981; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-save:hover { background-color: #059669; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-card { background-color: #ffffff; width: 90%; max-width: 360px; border-radius: 16px; padding: 30px 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); transform: scale(0.9); transition: 0.3s; border: 1px solid #e2e8f0; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { font-size: 45px; margin-bottom: 15px; }
+        .modal-card h3 { color: #1e293b; font-size: 20px; margin-bottom: 10px; }
+        .modal-card p { color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-cancel { background-color: #f1f5f9; color: #475569; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; display: none; }
+        .btn-cancel:hover { background-color: #e2e8f0; color: #1e293b; }
+        .btn-confirm { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; }
+        .btn-confirm.blue { background-color: #3b82f6; }
+        .btn-confirm.blue:hover { background-color: #2563eb; }
+
+        .dark-theme { background-color: #0f172a; color: #f8fafc; }
+        .dark-theme .profile-header { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .profile-header h2 { color: #f8fafc; }
+        .dark-theme .btn-back-text { color: #f8fafc; }
+        .dark-theme .profile-card { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .avatar-section { border-bottom-color: #334155; }
+        .dark-theme .avatar-display { border-color: #111827; background-color: #1f2937;}
+        .dark-theme .edit-badge { border-color: #111827; background-color: #374151;}
+        .dark-theme .edit-badge:hover { background-color: #3b82f6; }
+        .dark-theme .user-subtitle { color: #94a3b8; }
+        .dark-theme .input-group input { background-color: #0f172a; border-color: #334155; color: #f8fafc; }
+        .dark-theme .input-group input:focus { border-color: #3b82f6; background-color: #111827; }
+        .dark-theme .eye-icon { color: #94a3b8; }
+        .dark-theme .eye-icon:hover { color: #60a5fa; }
+        .dark-theme .modal-card { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .modal-card h3 { color: #f8fafc; }
+        .dark-theme .modal-card p { color: #94a3b8; }
+        .dark-theme .btn-cancel { background-color: #334155; color: #cbd5e1; }
+        .dark-theme .btn-cancel:hover { background-color: #475569; color: #f8fafc; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon" id="modal-icon">⚠️</div>
+            <h3 id="modal-title">Uyarı</h3>
+            <p id="modal-desc">Mesajınız buraya gelecek.</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="modal-btn-cancel" onclick="kapatModal()">İptal</button>
+                <button class="btn-confirm blue" id="modal-btn-confirm">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('gezgin_auth') !== 'true') {
+            window.location.replace('login.html');
+        }
+        if (localStorage.getItem('gezgin_theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        function ozelModalGoster(ayarlar) {
+            document.getElementById('modal-icon').innerText = ayarlar.icon || "ℹ️";
+            document.getElementById('modal-title').innerText = ayarlar.title || "Bilgi";
+            document.getElementById('modal-desc').innerText = ayarlar.desc || "";
+            
+            const btnCancel = document.getElementById('modal-btn-cancel');
+            const btnConfirm = document.getElementById('modal-btn-confirm');
+            
+            if (ayarlar.tip === "confirm") {
+                btnCancel.style.display = 'block';
+                btnConfirm.innerText = ayarlar.confirmText || "Tamam";
+                btnConfirm.className = "btn-confirm " + (ayarlar.btnRenk || "blue");
+                btnConfirm.onclick = () => { kapatModal(); if(ayarlar.onConfirm) ayarlar.onConfirm(); };
+            } else {
+                btnCancel.style.display = 'none';
+                btnConfirm.innerText = ayarlar.confirmText || "Tamam";
+                btnConfirm.className = "btn-confirm blue";
+                btnConfirm.onclick = kapatModal;
+            }
+            document.getElementById('custom-modal').classList.add('active');
+        }
+
+        function kapatModal() { 
+            document.getElementById('custom-modal').classList.remove('active'); 
+        }
+    </script>
+
+    <div class="container">
+        <div class="profile-header">
+            <a href="anaekran.html" class="btn-back-text">← Geri Dön</a>
+            <h2>Profil Ayarları</h2>
+        </div>
+
+        <div class="profile-card">
+            <div class="avatar-section">
+                <div class="avatar-wrapper">
+                    <div class="avatar-display" id="prof-avatar-preview">👤</div>
+                    <label for="avatar-upload" class="edit-badge" title="Fotoğrafı Değiştir">✏️</label>
+                    <input type="file" id="avatar-upload" accept="image/*" style="display: none;" onchange="fotoGuncelle(event)">
+                </div>
+                <div class="user-name" id="display-isim">Yükleniyor...</div>
+                <div class="user-subtitle">Aktif Gezgin</div>
+            </div>
+
+            <div class="form-section">
+                <div class="input-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="prof-isim" placeholder="Örn: Eren">
+                </div>
+                <div class="input-group">
+                    <label>E-Posta Adresi</label>
+                    <input type="email" id="prof-email">
+                </div>
+                <div class="input-group">
+                    <label>Şifre</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="prof-sifre">
+                        <div class="eye-icon" onclick="sifreGosterGizle()">
+                            <svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg id="icon-eye-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-save" onclick="profiliKaydet()">Değişiklikleri Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let guncelAvatar = "";
+        let aktifKullanici = JSON.parse(localStorage.getItem('gezgin_kullanici')) || null;
+
+        function profilYukle() {
+            if(aktifKullanici) {
+                if (!aktifKullanici.id) {
+                    aktifKullanici.id = "usr_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('gezgin_kullanici', JSON.stringify(aktifKullanici));
+                }
+
+                document.getElementById('display-isim').innerText = aktifKullanici.isim;
+                document.getElementById('prof-isim').value = aktifKullanici.isim;
+                document.getElementById('prof-email').value = aktifKullanici.email || "";
+                document.getElementById('prof-sifre').value = aktifKullanici.sifre;
+                
+                guncelAvatar = aktifKullanici.avatar;
+                
+                const avatarKutusu = document.getElementById('prof-avatar-preview');
+                if(aktifKullanici.avatar && aktifKullanici.avatar.startsWith('data:image')) {
+                    avatarKutusu.innerHTML = `<img src="${aktifKullanici.avatar}" style="width: 100%; height: 100%; object-fit: cover;" draggable="false">`;
+                } else {
+                    avatarKutusu.innerHTML = aktifKullanici.avatar || "👤";
+                }
+            }
+        }
+
+        function fotoGuncelle(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    guncelAvatar = reader.result;
+                    document.getElementById('prof-avatar-preview').innerHTML = `<img src="${guncelAvatar}" style="width: 100%; height: 100%; object-fit: cover;" draggable="false">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function sifreGosterGizle() {
+            const sifreInput = document.getElementById('prof-sifre');
+            const iconEyeOff = document.getElementById('icon-eye-off');
+            const iconEyeOn = document.getElementById('icon-eye-on');
+            
+            if (sifreInput.type === "password") {
+                sifreInput.type = "text";
+                iconEyeOff.style.display = "none";
+                iconEyeOn.style.display = "block";
+            } else {
+                sifreInput.type = "password";
+                iconEyeOff.style.display = "block";
+                iconEyeOn.style.display = "none";
+            }
+        }
+
+        function profiliKaydet() {
+            const yeniIsim = document.getElementById('prof-isim').value.trim();
+            const yeniEmail = document.getElementById('prof-email').value.trim();
+            const yeniSifre = document.getElementById('prof-sifre').value.trim();
+
+            if (!yeniIsim || !yeniSifre) {
+                ozelModalGoster({ tip: "alert", icon: "⚠️", title: "Eksik Bilgi", desc: "İsim ve şifre alanları boş bırakılamaz!" });
+                return;
+            }
+
+            // GÜVENLİK: Dinamik İsim Tarama ve Rezervasyon
+            let alinmisIsimler = JSON.parse(localStorage.getItem('gezgin_alinmis_isimler')) || ["Damla İlknur", "Mert", "Eren", "Sen"]; 
+            
+            // Keşfetteki tüm gönderi yazarlarını da yasaklı listeye ekle
+            let tumGonderiler = JSON.parse(localStorage.getItem('gezgin_kesfet_gonderiler')) || [];
+            tumGonderiler.forEach(g => {
+                if (g.yazar && !alinmisIsimler.includes(g.yazar)) {
+                    alinmisIsimler.push(g.yazar);
+                }
+            });
+
+            const kucukYeniIsim = yeniIsim.toLowerCase();
+            const kucukEskiIsim = (aktifKullanici.isim || "").toLowerCase();
+
+            if (kucukYeniIsim !== kucukEskiIsim) {
+                const isimMusaitMi = !alinmisIsimler.some(isim => isim.toLowerCase() === kucukYeniIsim);
+                
+                if (!isimMusaitMi) {
+                    ozelModalGoster({ 
+                        tip: "alert", 
+                        icon: "🔒", 
+                        title: "Kullanıcı Adı Alınmış", 
+                        desc: `Bu kullanıcı adı (${yeniIsim}) zaten başka bir gezgin tarafından kullanılıyor veya sistemde kayıtlı. Lütfen sonuna rakam ekleyerek farklı bir isim deneyin.` 
+                    });
+                    return; 
+                }
+            }
+
+            alinmisIsimler = alinmisIsimler.filter(isim => isim.toLowerCase() !== kucukEskiIsim);
+            if (!alinmisIsimler.some(isim => isim.toLowerCase() === kucukYeniIsim)) {
+                alinmisIsimler.push(yeniIsim);
+            }
+            localStorage.setItem('gezgin_alinmis_isimler', JSON.stringify(alinmisIsimler));
+
+            aktifKullanici.isim = yeniIsim;
+            aktifKullanici.email = yeniEmail;
+            aktifKullanici.sifre = yeniSifre;
+            aktifKullanici.avatar = guncelAvatar;
+
+            localStorage.setItem('gezgin_kullanici', JSON.stringify(aktifKullanici));
+            document.getElementById('display-isim').innerText = yeniIsim;
+            
+            ozelModalGoster({ tip: "alert", icon: "✅", title: "Başarılı", desc: "Profil ayarlarınız başarıyla güncellendi!" });
+        }
+
+        window.onload = profilYukle;
+    </script>
+</body>
+</html>

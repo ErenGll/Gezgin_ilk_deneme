@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezgin - Giriş Yap</title>
+    <link rel="icon" type="image/jpeg" href="gezgin icon.jpg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+        
+        body { background-color: #bac2ca; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; transition: 0.3s; color: #1e293b; }
+        
+        .auth-container { width: 100%; max-width: 420px; perspective: 1000px; }
+
+        .auth-card { background-color: #ffffff; border-radius: 20px; padding: 40px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; transition: 0.4s; text-align: center; }
+
+        .brand-logo { width: 70px; height: 70px; border-radius: 16px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        h2 { font-size: 24px; color: #0f172a; margin-bottom: 10px; transition: 0.3s; }
+        p.subtitle { font-size: 14px; color: #64748b; margin-bottom: 30px; line-height: 1.5; transition: 0.3s; }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #475569; transition: 0.3s; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-group input { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none; font-size: 14px; background-color: #f8fafc; transition: 0.2s; color: #1e293b; }
+        .input-group input.has-icon { padding-right: 45px; }
+        .input-group input:focus { border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        
+        .eye-icon { position: absolute; right: 15px; cursor: pointer; color: #64748b; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .eye-icon:hover { color: #3b82f6; }
+
+        .btn-primary { width: 100%; background-color: #10b981; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+        .btn-primary:hover { background-color: #059669; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3); }
+
+        .link-text { font-size: 13px; color: #3b82f6; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 15px; transition: 0.2s; }
+        .link-text:hover { color: #2563eb; text-decoration: underline; }
+
+        .forgot-pass-link { display: block; text-align: right; font-size: 12px; color: #64748b; margin-top: -10px; margin-bottom: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .forgot-pass-link:hover { color: #3b82f6; }
+
+        .form-section { display: none; animation: fadeIn 0.4s ease; }
+        .form-section.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ÖZEL BİLDİRİM MODALI CSS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-card { background-color: #ffffff; width: 90%; max-width: 360px; border-radius: 16px; padding: 30px 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); transform: scale(0.9); transition: 0.3s; border: 1px solid #e2e8f0; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { font-size: 45px; margin-bottom: 15px; }
+        .modal-card h3 { color: #1e293b; font-size: 20px; margin-bottom: 10px; }
+        .modal-card p { color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-confirm { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; }
+        .btn-confirm.blue { background-color: #3b82f6; }
+        .btn-confirm.blue:hover { background-color: #2563eb; }
+
+        /* KARANLIK MOD CSS */
+        .dark-theme { background-color: #0f172a; color: #f8fafc; }
+        .dark-theme .auth-card { background-color: #1e293b; border-color: #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .dark-theme h2 { color: #f8fafc; }
+        .dark-theme p.subtitle, .dark-theme .input-group label { color: #94a3b8; }
+        .dark-theme .input-group input { background-color: #0f172a; border-color: #334155; color: #f8fafc; }
+        .dark-theme .input-group input:focus { border-color: #3b82f6; background-color: #111827; }
+        .dark-theme .eye-icon { color: #94a3b8; }
+        .dark-theme .eye-icon:hover { color: #60a5fa; }
+        .dark-theme .forgot-pass-link { color: #94a3b8; }
+        .dark-theme .forgot-pass-link:hover { color: #60a5fa; }
+        
+        .dark-theme .modal-card { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .modal-card h3 { color: #f8fafc; }
+        .dark-theme .modal-card p { color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon" id="modal-icon">⚠️</div>
+            <h3 id="modal-title">Uyarı</h3>
+            <p id="modal-desc">Mesajınız buraya gelecek.</p>
+            <div class="modal-buttons">
+                <button class="btn-confirm blue" onclick="kapatModal()">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <img src="gezgin icon.jpg" alt="Gezgin Logo" class="brand-logo" draggable="false">
+            
+            <!-- FORM 1: GİRİŞ YAP -->
+            <div id="section-login" class="form-section active">
+                <h2>Gezgin'e Giriş Yap</h2>
+                <p class="subtitle">Yeni rotalar keşfetmek için hesabına giriş yap.</p>
+
+                <div class="input-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="login-isim" placeholder="Kullanıcı adını gir">
+                </div>
+                <div class="input-group">
+                    <label>Şifre</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="login-sifre" class="has-icon" placeholder="••••••••">
+                        <div class="eye-icon" onclick="sifreGosterGizle('login-sifre', 'login-eye-off', 'login-eye-on')">
+                            <svg id="login-eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                            <svg id="login-eye-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <span class="forgot-pass-link" onclick="formDegistir('section-forgot-verify')">Şifremi Unuttum</span>
+
+                <button class="btn-primary" onclick="girisYap()">Giriş Yap</button>
+                <span class="link-text" onclick="formDegistir('section-register')">Hesabın yok mu? Kayıt Ol</span>
+            </div>
+
+            <!-- FORM 2: KAYIT OL -->
+            <div id="section-register" class="form-section">
+                <h2>Aramıza Katıl</h2>
+                <p class="subtitle">Kendi rotalarını oluşturmak için hemen kayıt ol.</p>
+
+                <div class="input-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="reg-isim" placeholder="Eşsiz bir isim seç">
+                </div>
+                <div class="input-group">
+                    <label>E-Posta Adresi</label>
+                    <input type="email" id="reg-email" placeholder="ornek@mail.com">
+                </div>
+                <div class="input-group">
+                    <label>Şifre</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="reg-sifre" class="has-icon" placeholder="••••••••">
+                        <div class="eye-icon" onclick="sifreGosterGizle('reg-sifre', 'reg-eye-off', 'reg-eye-on')">
+                            <svg id="reg-eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                            <svg id="reg-eye-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="kayitOl()">Kayıt Ol</button>
+                <span class="link-text" onclick="formDegistir('section-login')">Zaten hesabın var mı? Giriş Yap</span>
+            </div>
+
+            <!-- FORM 3: ŞİFREMİ UNUTTUM (Aşama 1 - Doğrulama) -->
+            <div id="section-forgot-verify" class="form-section">
+                <h2>Şifremi Unuttum</h2>
+                <p class="subtitle">Güvenliğiniz için kayıtlı kullanıcı adınızı ve e-posta adresinizi doğrulayın.</p>
+
+                <div class="input-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="forgot-isim" placeholder="Kayıtlı kullanıcı adınız">
+                </div>
+                <div class="input-group">
+                    <label>E-Posta Adresi</label>
+                    <input type="email" id="forgot-email" placeholder="Kayıtlı e-posta adresiniz">
+                </div>
+
+                <button class="btn-primary" onclick="sifreSifirlaDogrula()">Doğrula ve İlerle</button>
+                <span class="link-text" onclick="formDegistir('section-login')">Geri Dön</span>
+            </div>
+
+            <!-- FORM 4: YENİ ŞİFRE (Aşama 2) -->
+            <div id="section-forgot-reset" class="form-section">
+                <h2>Yeni Şifre Belirle</h2>
+                <p class="subtitle" id="reset-user-text">Kimlik doğrulandı. Lütfen yeni şifrenizi belirleyin.</p>
+
+                <div class="input-group">
+                    <label>Yeni Şifre</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="reset-sifre" class="has-icon" placeholder="••••••••">
+                        <div class="eye-icon" onclick="sifreGosterGizle('reset-sifre', 'reset-eye-off', 'reset-eye-on')">
+                            <svg id="reset-eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                            <svg id="reset-eye-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="yeniSifreyiKaydet()">Şifreyi Güncelle</button>
+                <span class="link-text" onclick="formDegistir('section-login')">İptal Et</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function temayiUygula() {
+            if (localStorage.getItem('gezgin_theme') === 'dark') document.body.classList.add('dark-theme');
+            else document.body.classList.remove('dark-theme');
+        }
+        temayiUygula();
+
+        function ozelModalGoster(ayarlar) {
+            document.getElementById('modal-icon').innerText = ayarlar.icon || "ℹ️";
+            document.getElementById('modal-title').innerText = ayarlar.title || "Bilgi";
+            document.getElementById('modal-desc').innerText = ayarlar.desc || "";
+            document.getElementById('custom-modal').classList.add('active');
+        }
+        function kapatModal() { 
+            document.getElementById('custom-modal').classList.remove('active'); 
+        }
+
+        function formDegistir(targetId) {
+            document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+            document.querySelectorAll('input').forEach(input => input.value = '');
+        }
+
+        function sifreGosterGizle(inputId, iconOffId, iconOnId) {
+            const input = document.getElementById(inputId);
+            const iconOff = document.getElementById(iconOffId);
+            const iconOn = document.getElementById(iconOnId);
+            
+            if (input.type === "password") {
+                input.type = "text";
+                iconOff.style.display = "none";
+                iconOn.style.display = "block";
+            } else {
+                input.type = "password";
+                iconOff.style.display = "block";
+                iconOn.style.display = "none";
+            }
+        }
+
+        function girisYap() {
+            const isim = document.getElementById('login-isim').value.trim();
+            const sifre = document.getElementById('login-sifre').value.trim();
+
+            if (!isim || !sifre) {
+                ozelModalGoster({ icon: "⚠️", title: "Eksik Bilgi", desc: "Kullanıcı adı ve şifre boş bırakılamaz." });
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('gezgin_kullanici'));
+            
+            if (user && user.isim.toLowerCase() === isim.toLowerCase() && user.sifre === sifre) {
+                localStorage.setItem('gezgin_auth', 'true');
+                window.location.replace('anaekran.html');
+            } else {
+                ozelModalGoster({ icon: "❌", title: "Giriş Başarısız", desc: "Kullanıcı adı veya şifre hatalı. Veya hesabınız yok." });
+            }
+        }
+
+        function kayitOl() {
+            const isim = document.getElementById('reg-isim').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const sifre = document.getElementById('reg-sifre').value.trim();
+
+            if (!isim || !sifre || !email) {
+                ozelModalGoster({ icon: "⚠️", title: "Eksik Bilgi", desc: "Tüm alanları (İsim, E-posta, Şifre) doldurmalısınız." });
+                return;
+            }
+
+            // DÜZELTİLDİ: Sabit liste silindi! Tamamen boş havuzla başlanıyor.
+            let alinmisIsimler = JSON.parse(localStorage.getItem('gezgin_alinmis_isimler')) || []; 
+            
+            let tumGonderiler = JSON.parse(localStorage.getItem('gezgin_kesfet_gonderiler')) || [];
+            tumGonderiler.forEach(g => {
+                if (g.yazar && !alinmisIsimler.includes(g.yazar)) alinmisIsimler.push(g.yazar);
+            });
+
+            if (alinmisIsimler.some(i => i.toLowerCase() === isim.toLowerCase())) {
+                ozelModalGoster({ icon: "🔒", title: "İsim Alınmış", desc: `Bu kullanıcı adı (${isim}) zaten kullanılıyor. Lütfen farklı bir isim seçin.` });
+                return;
+            }
+
+            alinmisIsimler.push(isim);
+            localStorage.setItem('gezgin_alinmis_isimler', JSON.stringify(alinmisIsimler));
+
+            const newUser = {
+                id: "usr_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9),
+                isim: isim,
+                email: email,
+                sifre: sifre,
+                avatar: "👤"
+            };
+
+            localStorage.setItem('gezgin_kullanici', JSON.stringify(newUser));
+            
+            ozelModalGoster({ icon: "✅", title: "Kayıt Başarılı", desc: "Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz." });
+            formDegistir('section-login');
+        }
+        
+        let resetIzniVerilenKullanici = null;
+
+        function sifreSifirlaDogrula() {
+            const girilenIsim = document.getElementById('forgot-isim').value.trim();
+            const girilenEmail = document.getElementById('forgot-email').value.trim();
+
+            if (!girilenIsim || !girilenEmail) {
+                ozelModalGoster({ icon: "⚠️", title: "Eksik Bilgi", desc: "Doğrulama için kullanıcı adı ve e-posta adresinizi girmelisiniz." });
+                return;
+            }
+
+            const kayitliKullanici = JSON.parse(localStorage.getItem('gezgin_kullanici'));
+
+            if (kayitliKullanici && 
+                kayitliKullanici.isim.toLowerCase() === girilenIsim.toLowerCase() && 
+                kayitliKullanici.email.toLowerCase() === girilenEmail.toLowerCase()) {
+                
+                resetIzniVerilenKullanici = kayitliKullanici;
+                document.getElementById('reset-user-text').innerText = `Hoş geldin ${kayitliKullanici.isim}. Lütfen yeni şifreni belirle.`;
+                formDegistir('section-forgot-reset');
+                
+            } else {
+                ozelModalGoster({ icon: "🛡️", title: "Doğrulama Başarısız", desc: "Girdiğiniz kullanıcı adı veya e-posta adresi sistemimizle eşleşmiyor." });
+            }
+        }
+
+        function yeniSifreyiKaydet() {
+            const yeniSifre = document.getElementById('reset-sifre').value.trim();
+
+            if (!yeniSifre) {
+                ozelModalGoster({ icon: "⚠️", title: "Boş Şifre", desc: "Yeni şifre alanı boş bırakılamaz." });
+                return;
+            }
+
+            if (resetIzniVerilenKullanici) {
+                resetIzniVerilenKullanici.sifre = yeniSifre;
+                localStorage.setItem('gezgin_kullanici', JSON.stringify(resetIzniVerilenKullanici));
+                resetIzniVerilenKullanici = null;
+                
+                ozelModalGoster({ icon: "✅", title: "Şifreniz Yenilendi", desc: "Şifreniz başarıyla değiştirildi! Yeni şifrenizle giriş yapabilirsiniz." });
+                formDegistir('section-login');
+            } else {
+                ozelModalGoster({ icon: "❌", title: "Güvenlik İhlali", desc: "Yetkisiz işlem. Lütfen sayfayı yenileyin." });
+            }
+        }
+    </script>
+</body>
+</html>

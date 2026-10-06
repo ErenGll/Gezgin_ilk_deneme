@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezgin - Hesap Oluştur</title>
+    <link rel="icon" type="image/jpeg" href="gezgin icon.jpg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #bac2ca; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; transition: 0.3s;}
+        
+        .auth-card { background-color: #ffffff; padding: 40px 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; border: 1px solid #cbd5e1; transition: 0.3s;}
+        .brand-icon { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; margin-bottom: 15px; }
+        
+        h2 { color: #1e293b; margin-bottom: 5px; font-size: 24px; transition: 0.3s;}
+        p { color: #64748b; margin-bottom: 25px; font-size: 14px; }
+
+        .avatar-preview { width: 90px; height: 90px; background-color: #f1f5f9; border-radius: 50%; margin: 0 auto 15px auto; display: flex; justify-content: center; align-items: center; font-size: 40px; border: 2px dashed #cbd5e1; overflow: hidden; position: relative; cursor: pointer; transition: 0.3s;}
+        .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .input-group { text-align: left; margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px; transition: 0.3s;}
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 14px; background-color: #f8fafc; transition: 0.2s; }
+        .input-group input:focus { border-color: #3b82f6; background-color: #ffffff; }
+
+        .btn-submit { width: 100%; background-color: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-submit:hover { background-color: #2563eb; }
+
+        .link-text { margin-top: 20px; font-size: 13px; color: #64748b; }
+        .link-text a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+        .link-text a:hover { text-decoration: underline; }
+
+        /* KARANLIK MOD CSS */
+        .dark-theme { background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .auth-card { background-color: #111827; border-color: #334155; }
+        .dark-theme h2 { color: #f8fafc; }
+        .dark-theme .input-group label { color: #94a3b8; }
+        .dark-theme .input-group input { background-color: #1f2937; border-color: #374151; color: #f1f5f9; }
+        .dark-theme .input-group input:focus { border-color: #3b82f6; background-color: #111827;}
+        .dark-theme .avatar-preview { background-color: #1f2937; border-color: #475569; }
+    </style>
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('gezgin_theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+
+    <div class="auth-card">
+        <img src="gezgin icon.jpg" alt="Gezgin" class="brand-icon">
+        <h2>Gezgin'e Katıl</h2>
+        <p>Rotalarını paylaşmak için profilini oluştur.</p>
+
+        <label for="avatar-upload" class="avatar-preview" id="avatar-container" title="Profil fotoğrafı seç">
+            <span id="avatar-placeholder">📸</span>
+        </label>
+        <input type="file" id="avatar-upload" accept="image/*" style="display: none;" onchange="fotoYukle(event)">
+
+        <div class="input-group">
+            <label>Ad Soyad (Keşfet'te görünecek)</label>
+            <input type="text" id="reg-isim" placeholder="Örn: Eren">
+        </div>
+        <div class="input-group">
+            <label>E-Posta Adresi</label>
+            <input type="email" id="reg-email" placeholder="Örn: eren@gmail.com">
+        </div>
+        <div class="input-group">
+            <label>Şifre</label>
+            <input type="password" id="reg-sifre" placeholder="Şifrenizi belirleyin">
+        </div>
+
+        <button class="btn-submit" onclick="hesapOlustur()">Hesap Oluştur ve Giriş Yap</button>
+
+        <div class="link-text">
+            Zaten bir hesabın var mı? <a href="login.html">Giriş Yap</a>
+        </div>
+    </div>
+
+    <script>
+        let base64Avatar = ""; 
+
+        function fotoYukle(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    base64Avatar = reader.result;
+                    document.getElementById('avatar-container').innerHTML = `<img src="${base64Avatar}">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function hesapOlustur() {
+            const isim = document.getElementById('reg-isim').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const sifre = document.getElementById('reg-sifre').value.trim();
+
+            if (!isim || !email || !sifre) {
+                alert("Lütfen tüm alanları doldurun!");
+                return;
+            }
+
+            const kullanici = {
+                isim: isim,
+                email: email,
+                sifre: sifre,
+                avatar: base64Avatar || "👤" 
+            };
+
+            localStorage.setItem('gezgin_kullanici', JSON.stringify(kullanici));
+            localStorage.setItem('gezgin_auth', 'true'); 
+            
+            alert(`Hoş geldin ${isim}! Hesabın oluşturuldu.`);
+            window.location.replace('anaekran.html');
+        }
+    </script>
+</body>
+</html>

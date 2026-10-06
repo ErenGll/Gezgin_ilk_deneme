@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezgin - Kayıtlı Rotalarım</title>
+    <link rel="icon" type="image/jpeg" href="gezgin icon.jpg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #bac2ca; display: flex; justify-content: center; padding: 40px 20px; transition: 0.3s; color: #1e293b; min-height: 100vh; }
+        
+        .container { width: 100%; max-width: 900px; }
+
+        .page-header { background-color: #ffffff; border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; transition: 0.3s; }
+        .page-header h2 { font-size: 18px; color: #1e293b; flex: 1; text-align: center; margin-right: 70px; transition: 0.3s; }
+        .btn-back-text { color: #3b82f6; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+
+        .routes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
+
+        .route-card { background-color: #ffffff; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; position: relative; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .route-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
+        
+        .route-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .route-title { font-size: 18px; color: #0f172a; font-weight: bold; line-height: 1.3; transition: 0.3s; }
+        .btn-delete { background: #fee2e2; color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; font-size: 14px; flex-shrink: 0; }
+        .btn-delete:hover { background: #fecaca; }
+
+        .route-info { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .info-badge { background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 12px; color: #475569; font-weight: 600; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
+
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .btn-action { flex: 1; min-width: 120px; text-align: center; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 6px; }
+        .btn-map { background-color: #dbeafe; color: #2563eb; }
+        .btn-map:hover { background-color: #bfdbfe; }
+        .btn-share { background-color: #ede9fe; color: #7c3aed; }
+        .btn-share:hover { background-color: #ddd6fe; }
+
+        .note-container { margin-top: auto; }
+        .note-box { background-color: #fefce8; border-left: 4px solid #facc15; padding: 15px; border-radius: 0 8px 8px 0; font-size: 13px; color: #854d0e; line-height: 1.5; transition: 0.3s; position: relative; }
+        .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .note-header strong { display: flex; align-items: center; gap: 5px; }
+        .btn-edit-note { background: none; border: none; color: #ca8a04; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.3s; }
+        .btn-edit-note:hover { text-decoration: underline; }
+        
+        .btn-add-note { width: 100%; background-color: #f1f5f9; color: #475569; border: 1px dashed #cbd5e1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-add-note:hover { background-color: #e2e8f0; color: #1e293b; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #64748b; background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; transition: 0.3s;}
+
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; }
+        .btn-page { background-color: #ffffff; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-weight: bold; color: #3b82f6; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .btn-page:hover:not(:disabled) { background-color: #f1f5f9; border-color: #94a3b8; }
+        .btn-page:disabled { color: #94a3b8; cursor: not-allowed; background-color: #f8fafc; opacity: 0.6; }
+        .page-info { font-size: 14px; font-weight: bold; color: #475569; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-card { background-color: #ffffff; width: 90%; max-width: 360px; border-radius: 16px; padding: 30px 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transform: scale(0.9); transition: 0.3s; border: 1px solid #e2e8f0; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { font-size: 45px; margin-bottom: 15px; }
+        .modal-card h3 { color: #1e293b; font-size: 20px; margin-bottom: 10px; }
+        .modal-card p { color: #64748b; font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+        
+        .modal-input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 14px; background-color: #f8fafc; color: #1e293b; margin-bottom: 20px; transition: 0.2s; display: none; }
+        .modal-input:focus { border-color: #3b82f6; }
+
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-cancel { background-color: #f1f5f9; color: #475569; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; }
+        .btn-cancel:hover { background-color: #e2e8f0; color: #1e293b; }
+        .btn-confirm { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; }
+        .btn-confirm.blue { background-color: #3b82f6; }
+        .btn-confirm.blue:hover { background-color: #2563eb; }
+        .btn-confirm.red { background-color: #ef4444; }
+        .btn-confirm.red:hover { background-color: #dc2626; }
+
+        /* KARANLIK MOD CSS */
+        .dark-theme { background-color: #0f172a; color: #f8fafc; }
+        .dark-theme .page-header { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .page-header h2 { color: #f8fafc; }
+        .dark-theme .btn-back-text { color: #f8fafc; }
+        .dark-theme .route-card, .dark-theme .empty-state { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .route-title { color: #f8fafc; }
+        .dark-theme .btn-delete { background: #7f1d1d; color: #fca5a5; }
+        .dark-theme .btn-delete:hover { background: #991b1b; }
+        .dark-theme .info-badge { background-color: #0f172a; border-color: #334155; color: #cbd5e1; }
+        .dark-theme .btn-map { background-color: #1e3a8a; color: #bfdbfe; }
+        .dark-theme .btn-map:hover { background-color: #1e40af; }
+        .dark-theme .btn-share { background-color: #4c1d95; color: #ddd6fe; }
+        .dark-theme .btn-share:hover { background-color: #5b21b6; }
+        .dark-theme .note-box { background-color: #334155; border-left-color: #facc15; color: #e2e8f0; }
+        .dark-theme .btn-edit-note { color: #fde047; }
+        .dark-theme .btn-add-note { background-color: #0f172a; border-color: #334155; color: #94a3b8; }
+        .dark-theme .btn-add-note:hover { background-color: #334155; color: #f8fafc; }
+
+        .dark-theme .modal-card { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .modal-card h3 { color: #f8fafc; }
+        .dark-theme .modal-card p { color: #94a3b8; }
+        .dark-theme .modal-input { background-color: #0f172a; border-color: #334155; color: #f8fafc; }
+        .dark-theme .modal-input:focus { border-color: #3b82f6; }
+        .dark-theme .btn-cancel { background-color: #334155; color: #cbd5e1; }
+        .dark-theme .btn-cancel:hover { background-color: #475569; color: #f8fafc; }
+
+        .dark-theme .btn-page { background-color: #1e293b; border-color: #334155; color: #60a5fa; }
+        .dark-theme .btn-page:hover:not(:disabled) { background-color: #334155; border-color: #475569; }
+        .dark-theme .btn-page:disabled { color: #475569; background-color: #0f172a; }
+        .dark-theme .page-info { color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon" id="modal-icon">⚠️</div>
+            <h3 id="modal-title">Uyarı</h3>
+            <p id="modal-desc">Mesajınız buraya gelecek.</p>
+            <input type="text" id="modal-input" class="modal-input">
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="modal-btn-cancel" onclick="kapatModal()">İptal</button>
+                <button class="btn-confirm blue" id="modal-btn-confirm">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('gezgin_auth') !== 'true') {
+            window.location.replace('login.html');
+        }
+        function temayiUygula() {
+            if (localStorage.getItem('gezgin_theme') === 'dark') document.body.classList.add('dark-theme');
+            else document.body.classList.remove('dark-theme');
+        }
+        temayiUygula();
+        window.addEventListener('pageshow', temayiUygula);
+
+        function ozelModalGoster(ayarlar) {
+            document.getElementById('modal-icon').innerText = ayarlar.icon || "ℹ️";
+            document.getElementById('modal-title').innerText = ayarlar.title || "Bilgi";
+            document.getElementById('modal-desc').innerText = ayarlar.desc || "";
+            
+            const btnCancel = document.getElementById('modal-btn-cancel');
+            const btnConfirm = document.getElementById('modal-btn-confirm');
+            const inputField = document.getElementById('modal-input');
+            
+            if (ayarlar.tip === "prompt") {
+                btnCancel.style.display = 'block';
+                inputField.style.display = 'block';
+                inputField.value = ayarlar.varsayilan || "";
+                inputField.placeholder = "Buraya yazın...";
+                btnConfirm.innerText = ayarlar.confirmText || "Kaydet";
+                btnConfirm.className = "btn-confirm " + (ayarlar.btnRenk || "blue");
+                btnConfirm.onclick = () => {
+                    const val = inputField.value;
+                    kapatModal();
+                    if(ayarlar.onConfirm) ayarlar.onConfirm(val);
+                };
+            } else if (ayarlar.tip === "confirm") {
+                btnCancel.style.display = 'block';
+                inputField.style.display = 'none';
+                btnConfirm.innerText = ayarlar.confirmText || "Tamam";
+                btnConfirm.className = "btn-confirm " + (ayarlar.btnRenk || "blue");
+                btnConfirm.onclick = () => { kapatModal(); if(ayarlar.onConfirm) ayarlar.onConfirm(); };
+            } else {
+                btnCancel.style.display = 'none';
+                inputField.style.display = 'none';
+                btnConfirm.innerText = ayarlar.confirmText || "Tamam";
+                btnConfirm.className = "btn-confirm blue";
+                btnConfirm.onclick = kapatModal;
+            }
+            
+            document.getElementById('custom-modal').classList.add('active');
+            if (ayarlar.tip === "prompt") setTimeout(() => inputField.focus(), 100);
+        }
+
+        function kapatModal() { 
+            document.getElementById('custom-modal').classList.remove('active'); 
+        }
+    </script>
+
+    <div class="container">
+        <div class="page-header">
+            <a href="anaekran.html" class="btn-back-text">← Geri Dön</a>
+            <h2>Kayıtlı Rotalarım</h2>
+        </div>
+
+        <div id="routes-container" class="routes-grid"></div>
+
+        <div id="pagination-controls" class="pagination" style="display: none;">
+            <button id="btn-prev" class="btn-page" onclick="sayfaDegistir(-1)">← Önceki</button>
+            <span id="page-info" class="page-info">Sayfa 1 / 1</span>
+            <button id="btn-next" class="btn-page" onclick="sayfaDegistir(1)">Sonraki →</button>
+        </div>
+    </div>
+
+    <script>
+        let suAnkiSayfa = 1;
+        const SAYFA_BASI_ROTA = 6;
+
+        function sayfaDegistir(yon) {
+            suAnkiSayfa += yon;
+            rotalariYukle();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function rotalariYukle() {
+            const container = document.getElementById('routes-container');
+            const paginationControls = document.getElementById('pagination-controls');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            const pageInfo = document.getElementById('page-info');
+
+            let rotalar = JSON.parse(localStorage.getItem('gezgin_kayitli_rotalar')) || [];
+
+            if (rotalar.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div style="font-size: 40px; margin-bottom: 15px;">🗺️</div>
+                        <h3>Henüz hiç rota kaydetmediniz.</h3>
+                        <p style="margin-top:10px;">Haritadan yeni bir rota oluşturup kaydedebilirsiniz.</p>
+                    </div>`;
+                paginationControls.style.display = 'none';
+                return;
+            }
+
+            rotalar.reverse(); 
+
+            const toplamRota = rotalar.length;
+            const toplamSayfa = Math.ceil(toplamRota / SAYFA_BASI_ROTA);
+
+            if (suAnkiSayfa > toplamSayfa && toplamSayfa > 0) suAnkiSayfa = toplamSayfa;
+
+            const baslangicIndex = (suAnkiSayfa - 1) * SAYFA_BASI_ROTA;
+            const bitisIndex = baslangicIndex + SAYFA_BASI_ROTA;
+            
+            const gosterilecekRotalar = rotalar.slice(baslangicIndex, bitisIndex);
+
+            container.innerHTML = '';
+            
+            gosterilecekRotalar.forEach(rota => {
+                const card = document.createElement('div');
+                card.className = 'route-card';
+                
+                let notHTML = '';
+                if (rota.not && rota.not.trim() !== "") {
+                    notHTML = `
+                        <div class="note-container">
+                            <div class="note-box">
+                                <div class="note-header">
+                                    <strong>📌 Notun</strong>
+                                    <button class="btn-edit-note" onclick="notEkleDuzenle(${rota.id})">Düzenle</button>
+                                </div>
+                                <div>${rota.not}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    notHTML = `
+                        <div class="note-container">
+                            <button class="btn-add-note" onclick="notEkleDuzenle(${rota.id})">
+                                ➕ Bu rotaya bir not ekle
+                            </button>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="route-header">
+                            <div class="route-title">🗺️ ${rota.baslangic} <br>➔ ${rota.bitis}</div>
+                            <button class="btn-delete" title="Sil" onclick="rotayiSil(${rota.id})">🗑️</button>
+                        </div>
+                        
+                        <div class="route-info">
+                            <div class="info-badge">⏱️ ${rota.tarih}</div>
+                            <div class="info-badge">📏 ${rota.mesafe}</div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn-action btn-map" onclick="haritadaAc(${rota.id})">🗺️ Haritada Aç</button>
+                            <button class="btn-action btn-share" onclick="kesfettePaylas(${rota.id})">🌍 Keşfette Paylaş</button>
+                        </div>
+                    </div>
+                    ${notHTML}
+                `;
+                container.appendChild(card);
+            });
+
+            if (toplamSayfa > 1) {
+                paginationControls.style.display = 'flex';
+                pageInfo.innerText = `Sayfa ${suAnkiSayfa} / ${toplamSayfa}`;
+                
+                btnPrev.disabled = (suAnkiSayfa === 1);
+                btnNext.disabled = (suAnkiSayfa === toplamSayfa);
+            } else {
+                paginationControls.style.display = 'none';
+            }
+        }
+
+        function rotayiSil(id) {
+            ozelModalGoster({
+                tip: "confirm",
+                icon: "🗑️️",
+                title: "Rotayı Sil",
+                desc: "Bu rotayı ve notlarını silmek istediğine emin misin?",
+                confirmText: "Evet, Sil",
+                btnRenk: "red",
+                onConfirm: () => {
+                    let rotalar = JSON.parse(localStorage.getItem('gezgin_kayitli_rotalar')) || [];
+                    rotalar = rotalar.filter(r => r.id !== id);
+                    localStorage.setItem('gezgin_kayitli_rotalar', JSON.stringify(rotalar));
+                    rotalariYukle();
+                }
+            });
+        }
+
+        function notEkleDuzenle(id) {
+            let rotalar = JSON.parse(localStorage.getItem('gezgin_kayitli_rotalar')) || [];
+            let index = rotalar.findIndex(r => r.id === id);
+            
+            if (index !== -1) {
+                let mevcutNot = rotalar[index].not || "";
+                ozelModalGoster({
+                    tip: "prompt",
+                    icon: "📝",
+                    title: "Not Ekle",
+                    desc: "Rotan için notunu yaz:",
+                    varsayilan: mevcutNot,
+                    onConfirm: (yeniNot) => {
+                        rotalar[index].not = yeniNot.trim();
+                        localStorage.setItem('gezgin_kayitli_rotalar', JSON.stringify(rotalar));
+                        rotalariYukle();
+                    }
+                });
+            }
+        }
+
+        function haritadaAc(id) {
+            localStorage.setItem('gezgin_load_route_id', id);
+            window.location.href = 'index.html';
+        }
+
+        function kesfettePaylas(id) {
+            const rotalar = JSON.parse(localStorage.getItem('gezgin_kayitli_rotalar')) || [];
+            const rota = rotalar.find(r => r.id === id);
+            
+            if (rota) {
+                ozelModalGoster({
+                    tip: "prompt",
+                    icon: "🌍",
+                    title: "Keşfette Paylaş",
+                    desc: "Bu rota hakkında diğer gezginlere ne tavsiye edersin?",
+                    varsayilan: rota.not || "",
+                    confirmText: "Paylaş",
+                    onConfirm: (paylasimNotu) => {
+                        if (paylasimNotu.trim() === "") {
+                            ozelModalGoster({ tip: "alert", icon: "⚠️", title: "Eksik Bilgi", desc: "Paylaşım yapabilmek için kısa bir tavsiye veya not yazmalısın!" });
+                            return;
+                        }
+
+                        const aktifKullanici = JSON.parse(localStorage.getItem('gezgin_kullanici')) || { isim: "Gezgin", avatar: "👤" };
+                        let gonderiler = JSON.parse(localStorage.getItem('gezgin_kesfet_gonderiler')) || [];
+                        
+                        const yeniGonderi = {
+                            id: Date.now(),
+                            yazar: aktifKullanici.isim,
+                            yazarId: aktifKullanici.id,
+                            avatar: aktifKullanici.avatar, 
+                            baslangic: rota.baslangic,
+                            bitis: rota.bitis,
+                            not: paylasimNotu.trim(),
+                            tarih: "Az önce",
+                            yorumlar: [],
+                            rotaData: rota 
+                        };
+
+                        gonderiler.push(yeniGonderi);
+                        localStorage.setItem('gezgin_kesfet_gonderiler', JSON.stringify(gonderiler));
+                        
+                        ozelModalGoster({
+                            tip: "confirm",
+                            icon: "✅",
+                            title: "Paylaşıldı",
+                            desc: "Harika! Rotan Keşfet ekranında paylaşıldı. Şimdi Keşfet sayfasına gitmek ister misin?",
+                            confirmText: "Keşfet'e Git",
+                            onConfirm: () => { window.location.href = "kesfet.html"; }
+                        });
+                    }
+                });
+            }
+        }
+
+        window.addEventListener('load', rotalariYukle);
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezgin - Ana Ekran</title>
+    <link rel="icon" type="image/jpeg" href="gezgin icon.jpg">
+    <style>
+        /* Tıklamaları akıcı hale getiren metin seçimi engeli */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+        
+        body { background-color: #bac2ca; color: #334155; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; position: relative; transition: background-color 0.3s, color 0.3s; }
+        
+        .profile-btn { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 10px; background-color: #ffffff; border: 1px solid #cbd5e1; padding: 6px 12px 6px 6px; border-radius: 30px; text-decoration: none; color: #1e293b; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.2s; cursor: pointer; }
+        .profile-btn:hover { background-color: #f1f5f9; transform: translateY(-2px); }
+        .profile-img { width: 32px; height: 32px; border-radius: 50%; background-color: #e2e8f0; display: flex; justify-content: center; align-items: center; overflow: hidden; font-size: 18px; }
+        .profile-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .header { text-align: center; margin-top: 40px; margin-bottom: 50px; transition: 0.3s; cursor: default; }
+        .brand-icon { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .header h1 { font-size: 32px; color: #1e293b; letter-spacing: -0.5px; transition: 0.3s; }
+        .header p { color: #64748b; font-size: 16px; margin-top: 5px; transition: 0.3s; }
+
+        /* 4 KARTI YAN YANA DİZEN GRID SİSTEMİ */
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; max-width: 1200px; }
+        
+        @media (max-width: 1024px) { .menu-grid { grid-template-columns: repeat(2, 1fr); max-width: 600px; } }
+        @media (max-width: 600px) { .menu-grid { grid-template-columns: 1fr; } }
+
+        .menu-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 16px; padding: 25px 15px; text-align: center; text-decoration: none; color: #1e293b; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); border-color: #94a3b8; background-color: #ffffff; }
+        
+        .icon-wrapper { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transition: 0.3s; }
+        .icon-wrapper svg { width: 28px; height: 28px; stroke-width: 2.2; }
+        
+        .card-map .icon-wrapper { background-color: #204b849e; color: #123c96; }
+        .card-discover .icon-wrapper { background-color: #cb5a9ab1; color: #4d0a28; }
+        .card-saved .icon-wrapper { background-color: #4dcd8bb7; color: #02412d; }
+        .card-settings .icon-wrapper { background-color: #3a5167b5; color: #28303b; }
+
+        .menu-card h2 { font-size: 18px; margin-bottom: 10px; transition: 0.3s; }
+        .menu-card p { font-size: 13px; color: #64748b; line-height: 1.5; transition: 0.3s; }
+
+        /* KARANLIK MOD CSS KODLARI */
+        .dark-theme { background-color: #0f172a; color: #f8fafc; }
+        .dark-theme .header h1 { color: #f8fafc; }
+        .dark-theme .header p { color: #94a3b8; }
+        .dark-theme .profile-btn { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+        .dark-theme .profile-btn:hover { background-color: #334155; }
+        .dark-theme .menu-card { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+        .dark-theme .menu-card h2 { color: #f8fafc; }
+        .dark-theme .menu-card p { color: #94a3b8; }
+        .dark-theme .menu-card:hover { background-color: #111827; border-color: #475569; }
+        .dark-theme .card-settings .icon-wrapper { background-color: #334155; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+    <script>
+        if (localStorage.getItem('gezgin_auth') !== 'true') {
+            window.location.replace('login.html');
+        }
+        function temayiUygula() {
+            if (localStorage.getItem('gezgin_theme') === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        }
+        temayiUygula();
+        window.addEventListener('pageshow', temayiUygula);
+    </script>
+
+    <a href="profil.html" class="profile-btn">
+        <div class="profile-img" id="top-avatar">👤</div>
+        <span id="top-isim">Profilim</span>
+    </a>
+
+    <div class="header">
+        <img src="gezgin icon.jpg" alt="Gezgin Logo" class="brand-icon" draggable="false">
+        <h1 id="welcome-text">Hoş Geldin, Gezgin!</h1>
+        <p>Bugün nereyi keşfetmek istersin?</p>
+    </div>
+
+    <div class="menu-grid">
+        <!-- Rota Oluştur Kartı -->
+        <a href="index.html" class="menu-card card-map">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                    <line x1="15" y1="3" x2="15" y2="21"></line>
+                </svg>
+            </div>
+            <h2>Rota Oluştur</h2>
+            <p>Harita üzerinde yeni güzergahlar çiz, yol üstündeki mekanları ve ibadethaneleri keşfet.</p>
+        </a>
+
+        <!-- Keşfet Kartı -->
+        <a href="kesfet.html" class="menu-card card-discover">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                </svg>
+            </div>
+            <h2>Keşfet</h2>
+            <p>Diğer gezginlerin paylaştığı rotalara göz at ve deneyimlerini toplulukla paylaş.</p>
+        </a>
+
+        <!-- Kayıtlı Rotalarım Kartı -->
+        <a href="kaydet.html" class="menu-card card-saved">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            <h2>Kayıtlı Rotalarım</h2>
+            <p>Daha önceden planladığın ve notlar aldığın kişisel rotalarına buradan ulaş.</p>
+        </a>
+
+        <!-- Sistem Ayarları Kartı (YENİ VE MODERN İKON) -->
+        <a href="ayarlar.html" class="menu-card card-settings">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+            </div>
+            <h2>Sistem Ayarları</h2>
+            <p>Uygulama temasını değiştir veya sistemden güvenle çıkış yap.</p>
+        </a>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('gezgin_kullanici'));
+        if(user) {
+            document.getElementById('welcome-text').innerText = `Hoş Geldin, ${user.isim}!`;
+            document.getElementById('top-isim').innerText = user.isim;
+            
+            const avatarKutusu = document.getElementById('top-avatar');
+            if(user.avatar && user.avatar.startsWith('data:image')) {
+                avatarKutusu.innerHTML = `<img src="${user.avatar}" draggable="false">`;
+            } else {
+                avatarKutusu.innerHTML = user.avatar || "👤";
+            }
+        }
+    </script>
+</body>
+</html>

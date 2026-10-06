@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezgin - Sistem Ayarları</title>
+    <link rel="icon" type="image/jpeg" href="gezgin icon.jpg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+        
+        /* Aşağı kaydırma olmasın diye padding biraz kısıldı */
+        body { background-color:  #bac2ca; display: flex; justify-content: center; padding: 30px 20px; transition: 0.3s; color: #1e293b; min-height: 100vh; }
+        
+        /* Kompakt genişliğe geri dönüldü */
+        .container { width: 100%; max-width: 650px; }
+
+        .page-header { background-color: #ffffff; border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; transition: 0.3s; }
+        .page-header h2 { font-size: 18px; color: #1e293b; flex: 1; text-align: center; margin-right: 70px; transition: 0.3s; }
+        .btn-back-text { color: #3b82f6; font-size: 14px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; cursor: pointer; transition: 0.2s; }
+        .btn-back-text:hover { color: #2563eb; }
+
+        .settings-card { background-color: #ffffff; border-radius: 16px; padding: 25px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; margin-bottom: 20px; transition: 0.3s; }
+        .settings-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .settings-icon { width: 42px; height: 42px; background-color: #eff6ff; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: #3b82f6; transition: 0.3s; }
+        .settings-icon svg { width: 22px; height: 22px; stroke-width: 2; }
+        
+        .settings-card h3 { font-size: 18px; color: #0f172a; transition: 0.3s; }
+        .settings-card p { font-size: 14px; color: #64748b; margin-bottom: 20px; line-height: 1.5; transition: 0.3s; }
+
+        .theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 500px) { .theme-options { grid-template-columns: 1fr; } }
+        
+        .theme-card { background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; }
+        .theme-card:hover { border-color: #cbd5e1; transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.03); }
+        .theme-card.active { border-color: #10b981; background-color: #ecfdf5; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
+        
+        /* Kesintisiz Animasyon Kapsayıcısı */
+        .theme-icon { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; transition: 0.3s ease-out; }
+        .theme-icon svg { width: 44px; height: 44px; stroke-width: 1.5; color: #64748b; transition: color 0.3s; }
+        
+        /* Büyüme kutuya, renk değişimi ikona */
+        .theme-card:hover .theme-icon { transform: scale(1.15); }
+        .theme-card:hover .theme-icon svg { color: #1e293b; }
+        
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        @keyframes rock-moon { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(20deg); } }
+        
+        .theme-card.card-light.active .theme-icon svg { animation: spin-slow 8s linear infinite; color: #059669; }
+        .theme-card.card-dark.active .theme-icon svg { animation: rock-moon 2.2s ease-in-out infinite; color: #059669; }
+
+        .theme-card h4 { font-size: 16px; color: #0f172a; margin-bottom: 5px; transition: 0.3s; }
+        .theme-card span { font-size: 13px; color: #64748b; transition: 0.3s; }
+        
+        .check-icon { position: absolute; top: 15px; right: 15px; width: 24px; height: 24px; background-color: #10b981; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; opacity: 0; transform: scale(0); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .check-icon svg { width: 13px; height: 13px; stroke-width: 3; }
+        .theme-card.active .check-icon { opacity: 1; transform: scale(1); }
+
+        .account-section { background-color: #ffffff; border-radius: 16px; padding: 20px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; transition: 0.3s; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .account-info h3 { font-size: 16px; color: #0f172a; margin-bottom: 5px; transition: 0.3s; }
+        .account-info p { font-size: 13px; color: #64748b; margin: 0; transition: 0.3s; }
+        
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .btn-logout:hover { background-color: #dc2626; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-card { background-color: #ffffff; width: 90%; max-width: 360px; border-radius: 16px; padding: 30px 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); transform: scale(0.9); transition: 0.3s; border: 1px solid #e2e8f0; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { font-size: 45px; margin-bottom: 15px; }
+        .modal-card h3 { color: #1e293b; font-size: 20px; margin-bottom: 10px; }
+        .modal-card p { color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-cancel { background-color: #f1f5f9; color: #475569; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; }
+        .btn-cancel:hover { background-color: #e2e8f0; color: #1e293b; }
+        .btn-confirm { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; }
+        .btn-confirm.red { background-color: #ef4444; }
+        .btn-confirm.red:hover { background-color: #dc2626; }
+
+        /* KARANLIK MOD CSS KODLARI */
+        .dark-theme { background-color: #0f172a; color: #f8fafc; }
+        .dark-theme .page-header { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .page-header h2 { color: #f8fafc; }
+        .dark-theme .btn-back-text { color: #f8fafc; }
+        
+        .dark-theme .settings-card, .dark-theme .account-section { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .settings-card h3, .dark-theme .account-info h3 { color: #f8fafc; }
+        .dark-theme .settings-card p, .dark-theme .account-info p { color: #94a3b8; }
+        .dark-theme .settings-icon { background-color: #0f172a; color: #60a5fa; }
+        
+        .dark-theme .theme-card { background-color: #111827; border-color: #334155; }
+        .dark-theme .theme-card:hover { border-color: #475569; }
+        .dark-theme .theme-card.active { border-color: #10b981; background-color: #064e3b; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); }
+        .dark-theme .theme-card h4 { color: #f8fafc; }
+        .dark-theme .theme-card span { color: #94a3b8; }
+        
+        .dark-theme .theme-card .theme-icon svg { color: #94a3b8; }
+        .dark-theme .theme-card:hover .theme-icon svg { color: #f8fafc; }
+        .dark-theme .theme-card.active .theme-icon svg { color: #10b981; }
+        
+        .dark-theme .modal-card { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .modal-card h3 { color: #f8fafc; }
+        .dark-theme .modal-card p { color: #94a3b8; }
+        .dark-theme .btn-cancel { background-color: #334155; color: #cbd5e1; }
+        .dark-theme .btn-cancel:hover { background-color: #475569; color: #f8fafc; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon">⚠️</div>
+            <h3>Çıkış Yap</h3>
+            <p>Gezgin hesabınızdan çıkış yapmak istediğinize emin misiniz?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="kapatModal()">İptal</button>
+                <button class="btn-confirm red" onclick="cikisIsleminiOnayla()">Evet, Çıkış Yap</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('gezgin_auth') !== 'true') {
+            window.location.replace('login.html');
+        }
+
+        function temaDurumunuYukle() {
+            const currentTheme = localStorage.getItem('gezgin_theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('card-dark').classList.add('active');
+                document.getElementById('card-light').classList.remove('active');
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.getElementById('card-light').classList.add('active');
+                document.getElementById('card-dark').classList.remove('active');
+            }
+        }
+
+        function temayiAyarla(secilenTema) {
+            localStorage.setItem('gezgin_theme', secilenTema);
+            temaDurumunuYukle();
+        }
+
+        function cikisYapiBaslat() {
+            document.getElementById('custom-modal').classList.add('active');
+        }
+
+        function kapatModal() {
+            document.getElementById('custom-modal').classList.remove('active');
+        }
+
+        function cikisIsleminiOnayla() {
+            localStorage.removeItem('gezgin_auth');
+            window.location.replace('login.html');
+        }
+
+        window.onload = temaDurumunuYukle;
+    </script>
+
+    <div class="container">
+        <div class="page-header">
+            <a href="anaekran.html" class="btn-back-text">← Geri Dön</a>
+            <h2>Sistem Ayarları</h2>
+        </div>
+
+        <div class="settings-card">
+            <div class="settings-card-header">
+                <div class="settings-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+                    </svg>
+                </div>
+                <h3>Görünüm ve Tema</h3>
+            </div>
+            <p>Gezgin arayüzünü hangi renk tonlarında kullanmak istediğinizi seçin. Seçiminiz tüm cihazlarda otomatik uygulanır.</p>
+            
+            <div class="theme-options">
+                <div class="theme-card card-light" id="card-light" onclick="temayiAyarla('light')">
+                    <div class="check-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="theme-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </div>
+                    <h4>Light Mode</h4>
+                    <span>Berrak ve aydınlık arayüz</span>
+                </div>
+                
+                <div class="theme-card card-dark" id="card-dark" onclick="temayiAyarla('dark')">
+                    <div class="check-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="theme-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </div>
+                    <h4>Dark Mode</h4>
+                    <span>Odaklanmayı artıran koyu tonlar</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="account-section">
+            <div class="account-info">
+                <h3>Hesap Yönetimi</h3>
+                <p>Aktif oturumunuzu sonlandırır.</p>
+            </div>
+            <button class="btn-logout" onclick="cikisYapiBaslat()">Sistemden Çıkış Yap</button>
+        </div>
+    </div>
+</body>
+</html>

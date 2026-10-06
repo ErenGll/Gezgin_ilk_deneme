@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezgin - Keşfet</title>
+    <link rel="icon" type="image/jpeg" href="gezgin icon.jpg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #bac2ca; color: #334155; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; transition: background-color 0.3s, color 0.3s; min-height: 100vh; }
+        
+        .container { max-width: 650px; width: 100%; }
+        
+        .page-header { background-color: #ffffff; border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; transition: 0.3s; }
+        .page-header h2 { font-size: 18px; color: #1e293b; flex: 1; text-align: center; margin-right: 70px; transition: 0.3s; }
+        .btn-back-text { color: #3b82f6; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+
+        .share-box { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; transition: 0.3s; }
+        .share-box h3 { margin-bottom: 15px; font-size: 16px; color: #0f172a; transition: 0.3s;}
+        .share-box select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px; background-color: #f8fafc; outline: none; font-size: 14px; transition: 0.3s; color: #1e293b;}
+        .share-box textarea { width: 100%; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; resize: none; min-height: 90px; margin-bottom: 15px; font-size: 14px; outline: none; transition: 0.3s; background-color: #f8fafc; color: #1e293b;}
+        .share-box select:focus, .share-box textarea:focus { border-color: #3b82f6; background-color: #ffffff; }
+        .btn-post { background-color: #10b981; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; float: right; transition: 0.2s; font-size: 14px; }
+        .btn-post:hover { background-color: #059669; }
+        .clearfix::after { content: ""; clear: both; display: table; }
+
+        .feed { display: flex; flex-direction: column; gap: 25px; }
+        .post-card { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; position: relative; }
+        
+        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+        .avatar { width: 45px; height: 45px; background-color: #f1f5f9; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; overflow: hidden; border: 2px solid #e2e8f0; transition: 0.3s;}
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .author-info h4 { font-size: 16px; color: #0f172a; margin-bottom: 2px; transition: 0.3s; }
+        .author-info span { font-size: 12px; color: #64748b; transition: 0.3s; }
+        
+        .btn-delete-post { background: #fee2e2; color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; font-size: 14px; margin-left: auto; }
+        .btn-delete-post:hover { background: #fecaca; }
+        
+        .route-badge { display: inline-flex; align-items: center; gap: 6px; background-color: #f0fdf4; color: #15803d; padding: 8px 15px; border-radius: 30px; font-size: 13px; font-weight: 600; margin-bottom: 20px; border: 1px solid #bbf7d0; transition: 0.3s; }
+        .post-text { font-size: 15px; line-height: 1.6; color: #334155; margin-bottom: 20px; transition: 0.3s; }
+
+        .btn-view-map { background-color: #f1f5f9; color: #3b82f6; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; margin-bottom: 25px; display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center; }
+        .btn-view-map:hover { background-color: #e2e8f0; border-color: #94a3b8; }
+
+        .comments-section { border-top: 1px solid #e2e8f0; padding-top: 20px; transition: 0.3s; }
+        .comment { display: flex; gap: 12px; margin-bottom: 15px; }
+        .comment-avatar { width: 32px; height: 32px; background-color: #f1f5f9; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 14px; flex-shrink: 0; overflow: hidden; border: 1px solid #e2e8f0; transition: 0.3s;}
+        .comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .comment-body { background-color: #f8fafc; padding: 12px 15px; border-radius: 0 12px 12px 12px; width: 100%; transition: 0.3s; border: 1px solid #f1f5f9; }
+        .comment-author { font-size: 13px; font-weight: bold; color: #0f172a; margin-bottom: 4px; transition: 0.3s; }
+        .comment-text { font-size: 14px; color: #475569; line-height: 1.4; transition: 0.3s; }
+
+        .add-comment { display: flex; gap: 10px; margin-top: 20px; }
+        .add-comment input { flex: 1; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 30px; outline: none; font-size: 13px; background-color: #f8fafc; transition: 0.3s; color:#1e293b;}
+        .add-comment input:focus { border-color: #3b82f6; background-color: #ffffff; }
+        .add-comment button { background-color: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .add-comment button:hover { background-color: #2563eb; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #64748b; background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; transition: 0.3s;}
+        .error-state { background-color: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; display: none;}
+
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; padding-bottom: 20px; }
+        .btn-page { background-color: #ffffff; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-weight: bold; color: #3b82f6; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .btn-page:hover:not(:disabled) { background-color: #f1f5f9; border-color: #94a3b8; }
+        .btn-page:disabled { color: #94a3b8; cursor: not-allowed; background-color: #f8fafc; opacity: 0.6; }
+        .page-info { font-size: 14px; font-weight: bold; color: #475569; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-card { background-color: #ffffff; width: 90%; max-width: 360px; border-radius: 16px; padding: 30px 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transform: scale(0.9); transition: 0.3s; border: 1px solid #e2e8f0; }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-icon { font-size: 45px; margin-bottom: 15px; }
+        .modal-card h3 { color: #1e293b; font-size: 20px; margin-bottom: 10px; }
+        .modal-card p { color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-cancel { background-color: #f1f5f9; color: #475569; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; display: none; }
+        .btn-cancel:hover { background-color: #e2e8f0; color: #1e293b; }
+        .btn-confirm { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; }
+        .btn-confirm.blue { background-color: #3b82f6; }
+        .btn-confirm.blue:hover { background-color: #2563eb; }
+        .btn-confirm.red { background-color: #ef4444; }
+        .btn-confirm.red:hover { background-color: #dc2626; }
+
+        /* KARANLIK MOD CSS */
+        .dark-theme { background-color: #0f172a; color: #f1f5f9; }
+        .dark-theme .page-header { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .page-header h2 { color: #f8fafc; }
+        .dark-theme .btn-back-text { color: #f8fafc; }
+        
+        .dark-theme .share-box, .dark-theme .post-card, .dark-theme .empty-state { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .share-box h3, .dark-theme .author-info h4 { color: #f8fafc; }
+        .dark-theme .post-text { color: #e2e8f0; }
+        
+        .dark-theme select, .dark-theme textarea, .dark-theme .add-comment input { background-color: #0f172a; color: #f8fafc; border-color: #334155; }
+        .dark-theme select:focus, .dark-theme textarea:focus, .dark-theme .add-comment input:focus { border-color: #3b82f6; background-color: #111827;}
+        
+        .dark-theme .btn-view-map { background-color: #0f172a; color: #bfdbfe; border-color: #334155; }
+        .dark-theme .btn-view-map:hover { background-color: #111827; }
+
+        .dark-theme .btn-delete-post { background: #7f1d1d; color: #fca5a5; }
+        .dark-theme .btn-delete-post:hover { background: #991b1b; }
+
+        .dark-theme .comment-body { background-color: #0f172a; border-color: #334155; }
+        .dark-theme .comment-author { color: #f8fafc; }
+        .dark-theme .comment-text { color: #cbd5e1; }
+        .dark-theme .comments-section { border-top-color: #334155; }
+        
+        .dark-theme .route-badge { background-color: #064e3b; color: #6ee7b7; border-color: #065f46; }
+        .dark-theme .avatar, .dark-theme .comment-avatar { border-color: #334155; background-color: #1f2937; }
+
+        .dark-theme .modal-card { background-color: #1e293b; border-color: #334155; }
+        .dark-theme .modal-card h3 { color: #f8fafc; }
+        .dark-theme .modal-card p { color: #94a3b8; }
+        .dark-theme .btn-cancel { background-color: #334155; color: #cbd5e1; }
+        .dark-theme .btn-cancel:hover { background-color: #475569; color: #f8fafc; }
+
+        .dark-theme .btn-page { background-color: #1e293b; border-color: #334155; color: #60a5fa; }
+        .dark-theme .btn-page:hover:not(:disabled) { background-color: #334155; border-color: #475569; }
+        .dark-theme .btn-page:disabled { color: #475569; background-color: #0f172a; }
+        .dark-theme .page-info { color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon" id="modal-icon">⚠️</div>
+            <h3 id="modal-title">Uyarı</h3>
+            <p id="modal-desc">Mesajınız buraya gelecek.</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="modal-btn-cancel" onclick="kapatModal()">İptal</button>
+                <button class="btn-confirm blue" id="modal-btn-confirm">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('gezgin_auth') !== 'true') {
+            window.location.replace('login.html');
+        }
+        function temayiUygula() {
+            if (localStorage.getItem('gezgin_theme') === 'dark') document.body.classList.add('dark-theme');
+            else document.body.classList.remove('dark-theme');
+        }
+        temayiUygula();
+        window.addEventListener('pageshow', temayiUygula);
+
+        function guvenliVeriCek(key, defaultData) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultData;
+            } catch (error) {
+                return defaultData;
+            }
+        }
+
+        let aktifKullanici = guvenliVeriCek('gezgin_kullanici', { isim: "Gezgin", avatar: "👤" });
+        // Kullanıcı silinmişse id'si olmaz, yenisini atarız ki sayfa çökmesin
+        if (!aktifKullanici.id) {
+            aktifKullanici.id = "usr_" + Date.now();
+            localStorage.setItem('gezgin_kullanici', JSON.stringify(aktifKullanici));
+        }
+
+        function renderAvatar(veri) {
+            if (veri && typeof veri === 'string' && veri.startsWith('data:image')) return `<img src="${veri}">`;
+            return veri || "👤";
+        }
+
+        function ozelModalGoster(ayarlar) {
+            document.getElementById('modal-icon').innerText = ayarlar.icon || "ℹ️";
+            document.getElementById('modal-title').innerText = ayarlar.title || "Bilgi";
+            document.getElementById('modal-desc').innerText = ayarlar.desc || "";
+            
+            const btnCancel = document.getElementById('modal-btn-cancel');
+            const btnConfirm = document.getElementById('modal-btn-confirm');
+            
+            if (ayarlar.tip === "confirm") {
+                btnCancel.style.display = 'block';
+                btnConfirm.innerText = ayarlar.confirmText || "Tamam";
+                btnConfirm.className = "btn-confirm " + (ayarlar.btnRenk || "blue");
+                btnConfirm.onclick = () => { kapatModal(); if(ayarlar.onConfirm) ayarlar.onConfirm(); };
+            } else {
+                btnCancel.style.display = 'none';
+                btnConfirm.innerText = ayarlar.confirmText || "Tamam";
+                btnConfirm.className = "btn-confirm blue";
+                btnConfirm.onclick = kapatModal;
+            }
+            
+            document.getElementById('custom-modal').classList.add('active');
+        }
+
+        function kapatModal() { 
+            document.getElementById('custom-modal').classList.remove('active'); 
+        }
+    </script>
+
+    <div class="container">
+        <div class="page-header">
+            <a href="anaekran.html" class="btn-back-text">← Geri Dön</a>
+            <h2>Topluluk Keşfet</h2>
+        </div>
+        
+        <div id="error-message" class="error-state"></div>
+
+        <div class="share-box clearfix">
+            <h3>Yeni Deneyim Paylaş</h3>
+            <select id="route-select">
+                <option value="">-- Kayıtlı rotalarından birini seç --</option>
+            </select>
+            <textarea id="post-text" placeholder="Bu rota hakkında diğer gezginlere ne tavsiye edersin? Neler yaşadın?"></textarea>
+            <button class="btn-post" onclick="gonderiPaylas()">Paylaş 🚀</button>
+        </div>
+
+        <div id="feed-container">
+            <div id="feed" class="feed"></div>
+            <div id="pagination-controls" class="pagination" style="display: none;">
+                <button id="btn-prev" class="btn-page" onclick="sayfaDegistir(-1)">← Önceki</button>
+                <span id="page-info" class="page-info">Sayfa 1 / 1</span>
+                <button id="btn-next" class="btn-page" onclick="sayfaDegistir(1)">Sonraki →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let suAnkiSayfa = 1;
+        const SAYFA_BASI_GONDERI = 5;
+
+        function rotalariCek() {
+            try {
+                const select = document.getElementById('route-select');
+                const rotalar = guvenliVeriCek('gezgin_kayitli_rotalar', []);
+                
+                rotalar.forEach(rota => {
+                    const opt = document.createElement('option');
+                    opt.value = JSON.stringify(rota);
+                    opt.innerText = `🗺️ ${rota.baslangic || '?'} ➔ ${rota.bitis || '?'} (${rota.tarih || ''})`;
+                    select.appendChild(opt);
+                });
+            } catch(err) {
+                console.error("Rotalar çekilirken bir hata oluştu:", err);
+            }
+        }
+
+        function sayfaDegistir(yon) {
+            suAnkiSayfa += yon;
+            gonderileriYukle();
+            document.querySelector('.share-box').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function gonderileriYukle() {
+            try {
+                const feedContainer = document.getElementById('feed');
+                const paginationControls = document.getElementById('pagination-controls');
+                const errBox = document.getElementById('error-message');
+                errBox.style.display = 'none';
+
+                let gonderiler = guvenliVeriCek('gezgin_kesfet_gonderiler', []);
+
+                if (!Array.isArray(gonderiler) || gonderiler.length === 0) {
+                    feedContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 40px; margin-bottom: 15px;">🌍</div>
+                        <h3>Keşfet şu an sessiz</h3>
+                        <p style="margin-top:10px;">Henüz kimse bir şey paylaşmamış. İlk paylaşan sen ol!</p>
+                    </div>`;
+                    paginationControls.style.display = 'none';
+                    return;
+                }
+
+                gonderiler.sort((a,b) => b.id - a.id);
+
+                const toplamGonderi = gonderiler.length;
+                const toplamSayfa = Math.ceil(toplamGonderi / SAYFA_BASI_GONDERI);
+
+                if (suAnkiSayfa > toplamSayfa && toplamSayfa > 0) {
+                    suAnkiSayfa = toplamSayfa;
+                }
+
+                const baslangicIndex = (suAnkiSayfa - 1) * SAYFA_BASI_GONDERI;
+                const bitisIndex = baslangicIndex + SAYFA_BASI_GONDERI;
+                
+                const gosterilecekGonderiler = gonderiler.slice(baslangicIndex, bitisIndex);
+
+                feedContainer.innerHTML = '';
+
+                gosterilecekGonderiler.forEach(gonderi => {
+                    const card = document.createElement('div');
+                    card.className = 'post-card';
+                    
+                    let yorumlarHTML = '';
+                    if(Array.isArray(gonderi.yorumlar) && gonderi.yorumlar.length > 0) {
+                        gonderi.yorumlar.forEach(y => {
+                            yorumlarHTML += `
+                                <div class="comment">
+                                    <div class="comment-avatar">${renderAvatar(y.avatar)}</div>
+                                    <div class="comment-body">
+                                        <div class="comment-author">${y.yazar || 'Bilinmiyor'}</div>
+                                        <div class="comment-text">${y.metin || ''}</div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    let silButonuHTML = '';
+                    let silebilirMi = false;
+                    
+                    if (gonderi.yazarId && aktifKullanici.id) {
+                        silebilirMi = (gonderi.yazarId === aktifKullanici.id);
+                    }
+
+                    if (silebilirMi) {
+                        silButonuHTML = `<button class="btn-delete-post" title="Bu gönderiyi sil" onclick="gonderiSil(${gonderi.id})">🗑️</button>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="post-header">
+                            <div class="avatar">${renderAvatar(gonderi.avatar)}</div>
+                            <div class="author-info">
+                                <h4>${gonderi.yazar || 'Bilinmiyor'}</h4>
+                                <span>${gonderi.tarih || ''}</span>
+                            </div>
+                            ${silButonuHTML}
+                        </div>
+                        <div class="route-badge">📍 ${gonderi.baslangic || '?'} ➔ ${gonderi.bitis || '?'}</div>
+                        <div class="post-text">${gonderi.not || ''}</div>
+                        
+                        <button class="btn-view-map" onclick="haritadaIncele(${gonderi.id})">
+                            🗺️ Bu Rotayı Haritada İncele
+                        </button>
+                        
+                        <div class="comments-section">
+                            ${yorumlarHTML}
+                            <div class="add-comment">
+                                <input type="text" id="yorum-input-${gonderi.id}" placeholder="Bu rotaya yorum yap..." onkeypress="handleEnter(event, ${gonderi.id})">
+                                <button onclick="yorumYap(${gonderi.id})">Gönder</button>
+                            </div>
+                        </div>
+                    `;
+                    feedContainer.appendChild(card);
+                });
+
+                if (toplamSayfa > 1) {
+                    paginationControls.style.display = 'flex';
+                    document.getElementById('page-info').innerText = `Sayfa ${suAnkiSayfa} / ${toplamSayfa}`;
+                    
+                    document.getElementById('btn-prev').disabled = (suAnkiSayfa === 1);
+                    document.getElementById('btn-next').disabled = (suAnkiSayfa === toplamSayfa);
+                } else {
+                    paginationControls.style.display = 'none';
+                }
+
+            } catch(err) {
+                console.error("Gönderiler yüklenirken bir sorun oluştu:", err);
+                const errBox = document.getElementById('error-message');
+                errBox.innerText = "Gönderileri çekerken ufak bir sorun oluştu. Sayfayı yenilemeyi deneyin.";
+                errBox.style.display = 'block';
+            }
+        }
+
+        function gonderiSil(gonderiId) {
+            ozelModalGoster({
+                tip: "confirm",
+                icon: "🗑️",
+                title: "Gönderiyi Sil",
+                desc: "Bu paylaşımını Keşfet ekranından silmek istediğine emin misin? (Kayıtlı rotaların etkilenmez)",
+                confirmText: "Evet, Sil",
+                btnRenk: "red",
+                onConfirm: () => {
+                    let gonderiler = guvenliVeriCek('gezgin_kesfet_gonderiler', []);
+                    gonderiler = gonderiler.filter(g => g.id !== gonderiId);
+                    localStorage.setItem('gezgin_kesfet_gonderiler', JSON.stringify(gonderiler));
+                    gonderileriYukle();
+                }
+            });
+        }
+
+        function gonderiPaylas() {
+            const secilenRota = document.getElementById('route-select').value;
+            const metin = document.getElementById('post-text').value.trim();
+
+            if (!secilenRota) { 
+                ozelModalGoster({ tip: "alert", icon: "📍", title: "Eksik Seçim", desc: "Lütfen paylaşmak için kayıtlı rotalarından birini seç!" });
+                return; 
+            }
+            if (!metin) { 
+                ozelModalGoster({ tip: "alert", icon: "✍️", title: "Not Eksik", desc: "Lütfen diğer gezginler için bir tavsiye veya not yaz!" });
+                return; 
+            }
+
+            const rotaVeri = JSON.parse(secilenRota);
+            const gonderiler = guvenliVeriCek('gezgin_kesfet_gonderiler', []);
+
+            const yeniGonderi = {
+                id: Date.now(),
+                yazar: aktifKullanici.isim,
+                yazarId: aktifKullanici.id, 
+                avatar: aktifKullanici.avatar,
+                baslangic: rotaVeri.baslangic,
+                bitis: rotaVeri.bitis,
+                not: metin,
+                tarih: "Az önce",
+                yorumlar: [],
+                rotaData: rotaVeri
+            };
+
+            gonderiler.push(yeniGonderi);
+            localStorage.setItem('gezgin_kesfet_gonderiler', JSON.stringify(gonderiler));
+            
+            document.getElementById('post-text').value = '';
+            document.getElementById('route-select').value = '';
+            
+            suAnkiSayfa = 1;
+            gonderileriYukle();
+        }
+
+        function yorumYap(gonderiId) {
+            const input = document.getElementById(`yorum-input-${gonderiId}`);
+            if (!input) return;
+            
+            const yorumMetni = input.value.trim();
+            if(!yorumMetni) return;
+
+            let gonderiler = guvenliVeriCek('gezgin_kesfet_gonderiler', []);
+            let gonderi = gonderiler.find(g => g.id === gonderiId);
+            
+            if(gonderi) {
+                if(!Array.isArray(gonderi.yorumlar)) gonderi.yorumlar = [];
+                gonderi.yorumlar.push({
+                    yazar: aktifKullanici.isim,
+                    avatar: aktifKullanici.avatar,
+                    metin: yorumMetni
+                });
+                localStorage.setItem('gezgin_kesfet_gonderiler', JSON.stringify(gonderiler));
+                gonderileriYukle();
+            }
+        }
+
+        function handleEnter(e, id) {
+            if(e.key === 'Enter') {
+                yorumYap(id);
+            }
+        }
+
+        function haritadaIncele(gonderiId) {
+            let gonderiler = guvenliVeriCek('gezgin_kesfet_gonderiler', []);
+            let gonderi = gonderiler.find(g => g.id === gonderiId);
+            
+            if(gonderi && gonderi.rotaData) {
+                localStorage.setItem('gezgin_load_shared_route', JSON.stringify(gonderi.rotaData));
+                window.location.href = 'index.html';
+            } else {
+                ozelModalGoster({ tip: "alert", icon: "⚠️", title: "Hata", desc: "Bu gönderiye ait harita detayı bulunamadı." });
+            }
+        }
+
+        window.addEventListener('load', () => {
+            rotalariCek();
+            gonderileriYukle();
+        });
+    </script>
+</body>
+</html>
